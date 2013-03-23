@@ -1,6 +1,9 @@
- README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/enimo/proxys.git
-git push -u origin master
+Proxys(Http Proxy)
+========================
+A http proxys for pc network local share with mobile device.
+Support a convenient method to debug and capture http request from you mobile or webapp. 
+
+
+
+
+
