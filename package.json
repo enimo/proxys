@@ -1,0 +1,38 @@
+{
+  "name": "proxys",
+  "version": "0.0.1",
+  "description": "A easy way to share your pc network to mobile device, and capture network traffic to debug mobile app.",
+  "main": "y",
+  "scripts": {
+    "test": "node ./libs/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "y"
+  },
+  "keywords": [
+    "capture traffic",
+    "easy proxy",
+    "webapp debug"
+  ],
+  "author": "enimo <enimong@gmail.com>",
+  "engines": {
+        "node": "0.8.x",
+        "npm": "1.1.x"
+   },
+  "repository": {
+        "type": "git",
+        "url": "https://github.com/enimo/proxys.git"
+   },
+  "bin": {
+        "proxys": "./app.js"
+   },
+  "preferGlobal": "true",
+  "dependencies": {},
+  "bugs": {
+        "web" : "https://github.com/enimo/proxys/issues"
+   },
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "5c9a1fafe5a3850f740d432095deeb8c319ea4f9"
+}
