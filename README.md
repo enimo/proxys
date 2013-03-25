@@ -12,8 +12,16 @@ It's depends on NodeJS, and then just playing like this:
 npm install -g proxys
 proxys
 ```
-and then follow the tips from terminator, add the proxy pac file address on your mobile network panel.
-That's all.
+
+
+and then follow the tips below:
+```php
+master: please use this pac file: http://172.22.159.9:9527/xy.pac
+listening on 0.0.0.0:9527
+listening on 0.0.0.0:9527
+```
+Add the proxy pac file address on your mobile network panel.
+And yet, enjoy it.
 
 ## Notes
 
