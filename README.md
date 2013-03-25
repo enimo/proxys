@@ -29,7 +29,11 @@ Especially note for mac user:
 
 Proxys' best friend HTTPScoop(http://www.tuffcode.com/download.html), It's one of your best matches.
 
-And enjoy yourself!
+## Future 
+
+I'll keep polishing this app and keep adding new features. If you have any problems when using this engine, please feel free to drop me an issue or contact me:
+
+* Weibo: http://weibo.com/enimo
 
 
 
