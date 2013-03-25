@@ -9,10 +9,10 @@ Proxys help developer easy to share their local pc network local to mobile devic
 It's depends on NodeJS, and then just playing like this:
 
 ```javascript
-./npm install -g proxys
-./proxys
+npm install -g proxys
+proxys
 ```
-and then follow the tip from terminator, add the proxy pac address in your mobile network panel.
+and then follow the tips from terminator, add the proxy pac file address on your mobile network panel.
 That's all.
 
 ## Notes
