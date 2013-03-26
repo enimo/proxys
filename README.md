@@ -1,4 +1,4 @@
-#Proxys(Easy Http Proxy)
+#Proxys (Easy Http Proxy)
 
 A easy way to share your pc network to mobile device, and capture network traffic to debug mobile app.
 
@@ -8,7 +8,7 @@ Proxys help developer easy to share their local pc network local to mobile devic
 
 It's depends on NodeJS, and then just playing like this:
 
-```javascript
+```php
 npm install -g proxys
 proxys
 ```
@@ -27,13 +27,13 @@ And yet, enjoy it.
 
 Especially note for mac user:
 
-Proxys' best friend HTTPScoop(http://www.tuffcode.com/download.html), It's one of your best matches.
+Proxys' best friend HTTPScoop (http://www.tuffcode.com/download.html), It's one of your best matches.
 
 ## Future 
 
 I'll keep polishing this app and keep adding new features. If you have any problems when using this engine, please feel free to drop me an issue or contact me:
 
-* Weibo: http://weibo.com/enimo
+* weibo: http://weibo.com/enimo
 
 
 
