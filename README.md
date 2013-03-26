@@ -6,14 +6,23 @@ Proxys help developer easy to share their local pc network to mobile device, and
 
 ## Usage
 
-It's depends on NodeJS, and then just playing like this:
+It's depends on Node, and then just playing like this:
 
-```php
-npm install -g proxys
-proxys
+### Installing npm (node package manager)
+
+```
+curl https://npmjs.org/install.sh | sh
 ```
 
+### Installing Proxys
 
+```
+npm install -g proxys
+```
+### Using Proxys
+```
+proxys
+```
 and then follow the tips below:
 ```php
 master: please use this pac file: http://172.22.159.9:9527/xy.pac
