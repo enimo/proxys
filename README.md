@@ -1,6 +1,6 @@
 #Proxys (Easy Http Proxy)
 
-A easy way to share your pc network to mobile device, and capture network traffic to debug mobile app.
+A easy way to share your PC network to mobile device, and capture network traffic to debug mobile app.
 
 Proxys help developer easy to share their local pc network to mobile device, and supply with a convenient method to debug and capture the http request header information  from you mobile.
 
