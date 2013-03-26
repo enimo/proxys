@@ -25,9 +25,9 @@ And yet, enjoy it.
 
 ## Notes
 
-Especially note for mac user:
+Especially note for Mac OS X user:
 
-Proxys' best friend HTTPScoop (http://www.tuffcode.com/download.html), It's one of your best matches.
+Proxys' best partner HTTPScoop (http://www.tuffcode.com/download.html), It's one of your best matches.
 
 ## Future 
 
