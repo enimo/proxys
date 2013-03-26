@@ -2,7 +2,7 @@
 
 A easy way to share your pc network to mobile device, and capture network traffic to debug mobile app.
 
-Proxys help developer easy to share their local pc network local to mobile device, and supply with a convenient method to debug and capture the http request from you mobile.
+Proxys help developer easy to share their local pc network to mobile device, and supply with a convenient method to debug and capture the http request header information  from you mobile.
 
 ## Usage
 
@@ -20,14 +20,13 @@ master: please use this pac file: http://172.22.159.9:9527/xy.pac
 listening on 0.0.0.0:9527
 listening on 0.0.0.0:9527
 ```
-Add the proxy pac file address on your mobile network panel.
-And yet, enjoy it.
+Add the proxy pac file address on your mobile network panel, and once more, enjoy it.
 
 ## Notes
 
 Especially note for Mac OS X user:
 
-Proxys' best partner HTTPScoop (http://www.tuffcode.com/download.html), It's one of your best matches.
+Proxys' suggested partner HTTPScoop (http://www.tuffcode.com/download.html), It's one of your best matches.
 
 ## Future 
 
