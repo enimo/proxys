@@ -55,36 +55,33 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	    ori_urls = [
 	
 	    	'http://play.baidu.com/*',
-	    	'http://music.baidu.com/*'
+	    	'http://weibo.com/enimo*'
 
 			];
 	
 	
 	//get the proxy local ip
+	//fixed windows can't get local ip
+	//fixed virtual machine can't get real network ip address
 	function get_local_ip() {
 		
-    	try {
+		var net = require('net'),		
+			socket = net.createConnection(80, 'www.baidu.com');
+			
+	  	socket.on('connect', function() {
+	    	return socket.address().address;
+	    	socket.end();
+	  	});
 	
-        var i, j, interfaces = require('os').networkInterfaces();
-
-        	for (i in interfaces) {
-            	if (interfaces.hasOwnProperty(i)) {
-                	for (j = 0; j < interfaces[i].length; j++) {
-                    	var addr = interfaces[i][j];
-                    	if (addr.family === 'IPv4' && !addr.internal) {
-                        	return addr.address;
-                    	}
-                	}
-            	}
-        	}
-    	} catch (err) {
-        	return '127.0.0.1';
-    	}
-
-    	return '127.0.0.1';
-
+	  	socket.on('error', function(e) {
+	    	console.log('socket error:',e);
+	    	return '127.0.0.1';
+	
+	  	});
+	
+		return '127.0.0.1';
+    
 	};
-
 
 	//first words
 	function starts_with(str, substr) {

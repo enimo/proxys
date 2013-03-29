@@ -31,4 +31,61 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * @version 0.0.1
  */
 
+//dns
+require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  console.log('virtual addr: '+add);
+	//will get virtual machine's ip
+})
+
+//socket
+function getNetworkIP(callback) {
+  var net = require('net');
+  var socket = net.createConnection(80, 'www.baidu.com');
+
+  socket.on('connect', function() {
+    callback(undefined, socket.address().address);
+    socket.end();
+  });
+
+  socket.on('error', function(e) {
+    callback(e, 'error');
+  });
+}
+
+getNetworkIP(function (error, ip) {
+    console.log('socket ip: ',ip);
+    if (error) {
+        console.log('error:', error);
+    }
+});
+
+
+//os networkInterfaces()
+function get_local_ip() {
+	
+	try {
+
+    var i, j, interfaces = require('os').networkInterfaces();
+		
+		//console.log(interfaces);
+    	for (i in interfaces) {
+        	if (interfaces.hasOwnProperty(i)) {
+            	for (j = 0; j < interfaces[i].length; j++) {
+                	var addr = interfaces[i][j];
+                	if (addr.family === 'IPv4' && !addr.internal) {
+                    	return addr.address;
+                	}
+            	}
+        	}
+    	}
+	} catch (err) {
+    	return '127.0.0.1';
+	}
+
+	return '127.0.0.1';
+
+};
+
+console.log('interface ip: ',get_local_ip());
+
 ;(function($_$){})(undefined);
