@@ -25,9 +25,10 @@ proxys
 ```
 and then follow the tips below:
 ```shell
-Plant this pac URL in your proxy config: http://192.168.1.111:9527/
+1. Plant this pac URL in your auto-proxy config: http://192.168.1.111:9527/
+2. Edit the ROOT/config.js file to add some proxy rules if you want.
 
-Proxys Rules info: 
+Current Proxys Rules info:
  ==== Skipped Uri below ====
 http://*.weibo.com/* 
 http://weibo.com/* 
