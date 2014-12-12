@@ -56,6 +56,7 @@ module.exports = {
 }
 ```
 Notice:
+
 1. skip_url为不进入代理的url列表;
 
 2. skip_url和pass_url互斥，两者都存在配置时，skip_url生效，即跳过skip_url的值，其它url都走代理.
@@ -71,8 +72,7 @@ module.exports = {
 	],
 }
 ```
-Notice:
-1. track_url中的uri列表会进入代理，并经过代理服务器请求外网返回数据.
+Notice: track_url中的uri列表会进入代理，并经过代理服务器请求外网返回数据.
 
 ### Add block URL
 
@@ -92,7 +92,9 @@ module.exports = {
 }
 ```
 Notice:
+
 1. block url列表将进入代理，并劫持后返回本地模拟数据;
+
 2. 支权目录匹配和单文件匹配.
 
 ### Additional info
