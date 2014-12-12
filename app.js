@@ -13,7 +13,7 @@ var http = require('http'),
 var cpus = require('os').cpus().length,
     local_addr = '0.0.0.0',
     local_port = 9527,
-	public_ip = utils.getPublicIP2(),
+	public_ip = utils.getPublicIP2() || cfg.defaultPublicIP,
     proxy_addr =  public_ip + ':' + local_port;
 
 
@@ -50,7 +50,7 @@ http.createServer(function(client_request, client_response) {
 			'Cache-Control': 'no-cache', // Avoid Cache pac file
             'Content-Type' : 'application/x-ns-proxy-autoconfig'
         });
-        client_response.end(utils.generatePac(cfg.pass_url, proxy_addr));
+        client_response.end(utils.generatePac(proxy_addr));
         return;
     }
 
@@ -64,10 +64,12 @@ http.createServer(function(client_request, client_response) {
     }
    	client_request.headers.host = $url.host;
 	
+	utils.log("===$url: ", $url); //protocol 
+	
 	var request_options = {
 	           host: $url.host,
 	           hostname: $url.hostname,
-	           port: 80,
+	           port: $url.port || 80,
 	           path: $url.path,
 	           method: client_request.method,
 	           headers: client_request.headers

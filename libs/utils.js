@@ -5,21 +5,19 @@
  */
 
 var	cfg = require('../config'),
-	http = require('http'),
-	_ = module.exports;
+	http = require('http');
 
 ;(function (name, factory) {
   	if (typeof define === 'function') {
     	// AMD/CMD Module
-    	define(factory);
+    	define(name, factory);
   	} else if (typeof module !== 'undefined' && module.exports) {
     	// Node.js Module
-    	_ = factory();
+    	module.exports = factory();
   	} else {
     	this[name] = factory();
   	}
 })('proxys.utils', function () {
-
 	//get the proxy local ip
 	//fixed windows can't get local ip
 	//fixed virtual machine can't get real network ip address
@@ -32,10 +30,10 @@ var	cfg = require('../config'),
 	  	});
 	  	socket.on('error', function(e) {
 	    	console.log('socket error:', e);
-	    	return '127.0.0.1';
+	    	return false;//'127.0.0.1';
 	
 	  	});
-		return '127.0.0.1';
+		return false;//'127.0.0.1';
 	}
 	
 	//get local ip via os networkInterfaces()
@@ -55,9 +53,9 @@ var	cfg = require('../config'),
 	    	}
 		} catch (err) {
 			console.log("get local ip err: ", err);
-	    	return '127.0.0.1';
+	    	return false;
 		}
-		return '127.0.0.1';
+		return false;//'127.0.0.1';
 	}
 
 	//first words
@@ -66,10 +64,18 @@ var	cfg = require('../config'),
 	}
 
 	//generate a pac contents
-	function generatePac(config_urls, proxy_addr) {
-    	var str = 'function FindProxyForURL(url, host) {\n' + '    if (';
-    	for (var i = 0, len = config_urls.length; i < len ; i++) {
-        	str += 'shExpMatch(url, "' + config_urls[i] + '")';
+	function generatePac(proxy_addr) {
+    	var str = 'function FindProxyForURL(url, host) {\n' + '    if (',
+			urls = null;
+			
+		if (cfg.skip_url.length !== 0) { //当skip_url和pass_url都不为空时，优先skip生效
+			urls = cfg.skip_url;
+		}
+		else if (cfg.pass_url.length !== 0) {
+			urls = cfg.pass_url;
+		}
+    	for (var i = 0, len = urls.length; i < len ; i++) {
+        	str += 'shExpMatch(url, "' + urls[i] + '")';
         	if (i === len - 1) {
             	str += ') {\n';
         	} else {
@@ -87,15 +93,15 @@ var	cfg = require('../config'),
 	
 	function log() {
 	    var apc = Array.prototype.slice;
-	    window.console && window.console.log.apply(console, apc.call(arguments));
+	    console && console.log.apply(console, apc.call(arguments));
 	}
 	
 	return {
-		log 			: log,
-		firstWord 		: firstWord,
-		generatePac		: generatePac,
-		getPublicIP1 	: getPublicIP1,
-		getPublicIP2 	: getPublicIP2
+		log 		 : log,
+		firstWord 	 : firstWord,
+		generatePac	 : generatePac,
+		getPublicIP1 : getPublicIP1,
+		getPublicIP2 : getPublicIP2
 	};
 	
 });

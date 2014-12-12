@@ -23,6 +23,7 @@ module.exports = {
 				dest: '/home/bae/static/'
 			}
 		],
+		defaultPublicIP : '192.168.1.101',
 		showReqHeader : false, //进入代理时，是否显示请求的header头信息
 		showResHeader : false //进入代理时，是否显示返回的header头信息
 }
