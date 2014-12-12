@@ -94,6 +94,9 @@ http.createServer(function(client_request, client_response) {
 	if (cfg.showReqHeader) {
 		utils.log('Client request header:', request_options.headers);
 	}
+	if (cfg.showReqUA) {
+		utils.log('Client request UserAgent:', request_options.headers['user-agent']);
+	}
 	
 	if (cfg.block_url.length !== 0) { // 需要劫持的url请求
 		for (var i = 0, len = cfg.block_url.length; i < len; i++) {
@@ -109,6 +112,7 @@ http.createServer(function(client_request, client_response) {
 			var noQueryUrl = client_request.url.replace(query, '');
 			var contentType = 'text/plain';
 
+			// FIX ME: Only support js/css MIME type for now
 			if (path.extname(noQueryUrl) === '.js') { // path.extname(param), param must no query.
 				contentType = 'application/x-javascript';
 			}
@@ -120,13 +124,24 @@ http.createServer(function(client_request, client_response) {
 			if (target.indexOf('{*}') !== -1) { // 使用目录匹配
 				var url_prefix = target.replace('{*}', ''),
 					req_path = noQueryUrl.replace(url_prefix, '');
-				utils.log("Directory Matched! Sent file: " + dest + req_path);
-				client_response.end(fs.readFileSync(dest + req_path));
+				if (fs.existsSync(dest + req_path)) {
+					utils.log("Directory Matched! Sent file: " + dest + req_path);
+					client_response.end(fs.readFileSync(dest + req_path));
+				}
+				else {
+					console.error('ERROR, File: ' + dest + req_path + ' is not exist!');
+					client_response.end('');	
+				}
 			}
 			else { // 即使用全文件匹配, 还缺一个根据文件类型来匹配
-				utils.log("Fully Matched! Sent file: " + dest);
-				//client_response.writeHead(200, { 'Content-Type': 'text/plain' });
-				client_response.end(fs.readFileSync(dest));
+				if (fs.existsSync(dest)) {
+					utils.log("Fully Matched! Sent file: " + dest);
+					client_response.end(fs.readFileSync(dest));
+				}
+				else {
+					console.error('ERROR, File: ' + dest + ' is not exist!');
+					client_response.end('');	
+				}
 			}
 			utils.log("========== Implanted done ==========\n");
 		}

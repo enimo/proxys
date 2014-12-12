@@ -50,6 +50,7 @@ module.exports = {
 		port : '9527',
 		
 		defaultPublicIP : '192.168.1.100',
+		showReqUA : false,
 		showReqHeader : false, //进入代理时，是否显示请求的header头信息
 		showResHeader : false //进入代理时，是否显示返回的header头信息
 }
