@@ -30,10 +30,10 @@ var	cfg = require('../config'),
 	  	});
 	  	socket.on('error', function(e) {
 	    	console.log('socket error:', e);
-	    	return false;//'127.0.0.1';
+	    	return false; // '127.0.0.1';
 	
 	  	});
-		return false;//'127.0.0.1';
+		return false; // '127.0.0.1';
 	}
 	
 	//get local ip via os networkInterfaces()
@@ -55,7 +55,7 @@ var	cfg = require('../config'),
 			console.log("get local ip err: ", err);
 	    	return false;
 		}
-		return false;//'127.0.0.1';
+		return false; // '127.0.0.1';
 	}
 
 	//first words
@@ -65,28 +65,37 @@ var	cfg = require('../config'),
 
 	//generate a pac contents
 	function generatePac(proxy_addr) {
+		// pac语法支持'!'语法， 但不支持'&&' ，因为一次只有一个URL匹配
     	var str = 'function FindProxyForURL(url, host) {\n' + '    if (',
-			urls = null;
+			urls = [],
+			exclude = '',
+			AndOr = '||',
+			direct = "DIRECT",
+			proxy = "PROXY " + proxy_addr;
 			
-		if (cfg.skip_url.length !== 0) { //当skip_url和pass_url都不为空时，优先skip生效
+		if (cfg.skip_url.length !== 0) { // 当skip_url和pass_url都不为空时，优先skip生效
 			urls = cfg.skip_url;
+			ifRet = direct;
+			elseRet = proxy;
 		}
-		else if (cfg.pass_url.length !== 0) {
-			urls = cfg.pass_url;
+		else if (cfg.track_url.length !== 0) {
+			urls = cfg.track_url;
+			ifRet = proxy;
+			elseRet = direct;
 		}
     	for (var i = 0, len = urls.length; i < len ; i++) {
-        	str += 'shExpMatch(url, "' + urls[i] + '")';
+        	str += exclude + 'shExpMatch(url, "' + urls[i] + '")';
         	if (i === len - 1) {
             	str += ') {\n';
         	} else {
-            	str += ' ||\n            ';
+            	str += ' '+ AndOr +'\n            ';
         	}
     	}
-    	str += '        return "DIRECT";\n'; //加入白名单的域名不进行代理，默认全部请求走代理
+    	str += '    	return "'+ ifRet +'";\n';//"DIRECT";
+						// 此处也可用于cross wall，填入本机局域网ip以及本地的HTTP或者SOCKET用于cross的监听端口
+						// return "SOCKS 192.168.1.100:7070"; or "PROXY 192.168.1.100:7070"				
         str += '    }\n';
-    	str += '    return "PROXY ' + proxy_addr + '";\n';//"DIRECT";
-					//此处也可用于cross wall，填入本机局域网ip以及本地的HTTP或者SOCKET用于cross的监听端口
-					//return "SOCKS 192.168.1.100:7070"; or "PROXY 192.168.1.100:7070"
+    	str += '  return "'+ elseRet +'";\n';// 加入白名单的域名不进行代理，默认全部请求走代理
         str += '}';
     	return str;
 	}
@@ -96,10 +105,22 @@ var	cfg = require('../config'),
 	    console && console.log.apply(console, apc.call(arguments));
 	}
 	
+	//generate a pac contents
+	function uriTrackInfo() {
+		if (cfg.skip_url.length !== 0) { // 当skip_url和pass_url都不为空时，优先skip生效
+			return "==== Skipped Uri below ====\n" + cfg.skip_url.join(" \n");
+		}
+		else if (cfg.track_url.length !== 0) {
+			return "==== Tracked Uri below ====\n" + cfg.track_url.join(" \n");
+		}
+		return 'Nothing :(';
+	}
+	
 	return {
 		log 		 : log,
 		firstWord 	 : firstWord,
 		generatePac	 : generatePac,
+		uriTrackInfo : uriTrackInfo,
 		getPublicIP1 : getPublicIP1,
 		getPublicIP2 : getPublicIP2
 	};

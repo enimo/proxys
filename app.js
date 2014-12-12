@@ -11,25 +11,15 @@ var http = require('http'),
 	cfg = require('./config');
 
 var cpus = require('os').cpus().length,
-    local_addr = '0.0.0.0',
-    local_port = 9527,
+    local_port = cfg.port,
+	pac_uri = cfg.pacUri,
 	public_ip = utils.getPublicIP2() || cfg.defaultPublicIP,
-    proxy_addr =  public_ip + ':' + local_port;
+    proxy_addr =  public_ip + ':' + local_port,
+    local_addr = '0.0.0.0';
 
+utils.log("Plant this pac URL in your proxy config: http://" + proxy_addr + pac_uri);
 
-utils.log('Please use this pac file: http://' + proxy_addr + '/p');
-
-// Workers can share any TCP connection, In this case its a HTTP server
 http.createServer(function(client_request, client_response) {
-	var _patterns = /\.(png|jpg|jpeg|gif|woff|ttf|js|css)/g;
-	//console.log("url.match: ", client_request.url.match(_patterns));
-	if (!client_request.url.match(_patterns)) {
-    	utils.log(client_request.connection.remoteAddress + ': ' 
-				+ client_request.method + ' ' 
-				+ client_request.url
-		);
-	}
-	
 	//broswer's default icon request
 	if (client_request.url === '/favicon.ico') {
 	            client_response.writeHead(404);
@@ -45,7 +35,7 @@ http.createServer(function(client_request, client_response) {
         return;
     }
 
-    if (client_request.url === '/p') {
+    if (client_request.url === pac_uri) {
         client_response.writeHead(200, {
 			'Cache-Control': 'no-cache', // Avoid Cache pac file
             'Content-Type' : 'application/x-ns-proxy-autoconfig'
@@ -54,18 +44,33 @@ http.createServer(function(client_request, client_response) {
         return;
     }
 
-    if (utils.firstWord(client_request.url, 'http')) {
-        var $url = url.parse(client_request.url); 
-    } else {
+	var $url = {};
+	if (utils.firstWord(client_request.url, 'https')) {
 		utils.log('Unsupport HTTPS request: ', client_request.url);
         client_response.writeHead(500);
         client_response.end();
         return;
+	}
+    else if (utils.firstWord(client_request.url, 'http')) { // check是否是HTTP协议，可能是file://协议
+         $url = url.parse(client_request.url); 
     }
+	else {
+		utils.log('Unsupport protocol request(such as file:// etc..): ', client_request.url);
+        client_response.writeHead(500);
+        client_response.end();
+        return;
+    }
+
+	var _patterns = new RegExp('\.('+ cfg.filterLogType +')', 'g'); // new Regexp(/\.()/g);
+	if (!client_request.url.match(_patterns)) {
+    	utils.log(client_request.connection.remoteAddress + ': ' 
+				+ client_request.method + ' ' 
+				+ client_request.url
+		);
+		utils.log("$url: ", $url); //protocol 
+	}
+	
    	client_request.headers.host = $url.host;
-	
-	utils.log("===$url: ", $url); //protocol 
-	
 	var request_options = {
 	           host: $url.host,
 	           hostname: $url.hostname,
@@ -90,6 +95,7 @@ http.createServer(function(client_request, client_response) {
 			if (target.indexOf('{*}') !== -1) { // 即使用目录匹配
 				var url_prefix = target.replace('{*}', '');
 				var req_path = client_request.url.replace(url_prefix, '');
+				client_response.writeHead(200, { 'Content-Type': 'text/plain' });
 				client_response.end(utils.getfile(dest + req_path));
 			}
 			else { // 即使用全文件匹配
@@ -116,7 +122,9 @@ http.createServer(function(client_request, client_response) {
 
 }).listen(local_port, local_addr);
 
-utils.log('I\'m listening on port: ' + local_port);
+//utils.log('Proxys listening port: ' + local_port);
+utils.log("\nProxys Rules info: \n", utils.uriTrackInfo());
+utils.log("\n===== Track Logging ... =====");
 
 process.on('uncaughtException', function(err) {
     console.error('Caught exception: ' + err);
