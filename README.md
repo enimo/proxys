@@ -25,10 +25,79 @@ proxys
 ```
 and then follow the tips below:
 ```shell
-Please use this pac file: http://192.168.1.101:9527/p
-I\'m listening on port: 9527
+Plant this pac URL in your proxy config: http://192.168.1.111:9527/
+
+Proxys Rules info: 
+ ==== Skipped Uri below ====
+http://*。weibo.com/* 
+http://weibo.com/* 
+
+===== Track Logging ... =====
 ```
 Add the proxy pac file address on your mobile network panel, and once more, enjoy it.
+
+### Add skip URI
+
+Edit ROOT/config.js file, add uri to skip_url array:
+```javascript
+module.exports = {
+ skip_url : [ 
+    	
+		'http://*。weibo.com/*',
+		'http://weibo.com/*',
+    	'http://*.weibo.cn/*',
+		'http://weibo.cn/*',
+		'http://*.sina.cn/*',
+		'http://sina.cn/*',
+		'http://*.sina.com.*',
+		'http://sina.com.*'
+		
+	]
+}
+```
+Notice:
+1. skip_url为不进入代理的url列表;
+2. skip_url和pass_url互斥，两者都存在配置时，skip_url生效，即跳过skip_url的值，其它url都走代理.
+
+### Add track URI
+
+Edit ROOT/config.js file, add uri to track_url array:
+```javascript
+module.exports = {
+	track_url : [ 
+    	'http://*.weixin.qq.com/*',
+    	'http://*.boc.cn/*'
+	],
+}
+```
+Notice:
+1. track_url中的uri列表会进入代理，并经过代理服务器请求外网返回数据.
+
+### Add block URL
+
+Edit ROOT/config.js file, add url to block_url array:
+```javascript
+module.exports = {
+	block_url : [ 
+		{ 
+			target: 'http://music.baidu.com/static/js/abc.js',
+			dest: '/home/bae/static/js/abc.js'
+		},
+		{ 
+			target: 'http://play.baidu.com/static/{*}',
+			dest: '/home/bae/static/'
+		}
+	]
+}
+```
+Notice:
+1. block url列表将进入代理，并劫持后返回本地模拟数据;
+2. 支权目录匹配和单文件匹配.
+
+### Additional info
+
+1. Not even 80 port, support any 1000+ port.
+2. Unsupport https protocol now.
 
 ## Notes
 
