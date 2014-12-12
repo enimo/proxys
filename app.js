@@ -7,6 +7,8 @@
 
 var http = require('http'),
 	url = require('url'),
+	fs = require('fs'),
+	path = require('path'),
 	utils = require('./libs/utils'),
 	cfg = require('./config');
 
@@ -20,7 +22,7 @@ var cpus = require('os').cpus().length,
 utils.log("Plant this pac URL in your proxy config: http://" + proxy_addr + pac_uri);
 
 http.createServer(function(client_request, client_response) {
-	//broswer's default icon request
+	//broswer default icon request
 	if (client_request.url === '/favicon.ico') {
 	            client_response.writeHead(404);
 	            client_response.end();
@@ -55,19 +57,28 @@ http.createServer(function(client_request, client_response) {
          $url = url.parse(client_request.url); 
     }
 	else {
-		utils.log('Unsupport protocol request(such as file:// etc..): ', client_request.url);
+		utils.log('Unsupport protocol request(such as "file://" etc..): ', client_request.url);
         client_response.writeHead(500);
         client_response.end();
         return;
     }
 
-	var _patterns = new RegExp('\.('+ cfg.filterLogType +')', 'g'); // new Regexp(/\.()/g);
-	if (!client_request.url.match(_patterns)) {
-    	utils.log(client_request.connection.remoteAddress + ': ' 
-				+ client_request.method + ' ' 
-				+ client_request.url
-		);
-		utils.log("$url: ", $url); //protocol 
+	if (
+		(	cfg.skipLogType 
+			&& 
+			!client_request.url.match(new RegExp('\.('+ cfg.skipLogType +')', 'g'))
+		)
+		||
+		(	cfg.trackLogType 
+			&& 
+			client_request.url.match(new RegExp('\.('+ cfg.trackLogType +')', 'g'))
+		)
+		
+		) {
+    		utils.log(client_request.connection.remoteAddress + ': ' 
+					+ client_request.method + ' ' 
+					+ client_request.url
+			);
 	}
 	
    	client_request.headers.host = $url.host;
@@ -88,19 +99,36 @@ http.createServer(function(client_request, client_response) {
 		for (var i = 0, len = cfg.block_url.length; i < len; i++) {
 			var target = cfg.block_url[i].target,
 				dest = cfg.block_url[i].dest;
-			if (client_request.url.indexOf(target.replace('{*}', '')) === -1) { //url未命中
-				continue;
+			if (client_request.url.indexOf(target.replace('{*}', '')) === -1) { 
+				continue; //url未命中拦截规则
 			}
 			
-			if (target.indexOf('{*}') !== -1) { // 即使用目录匹配
-				var url_prefix = target.replace('{*}', '');
-				var req_path = client_request.url.replace(url_prefix, '');
-				client_response.writeHead(200, { 'Content-Type': 'text/plain' });
-				client_response.end(utils.getfile(dest + req_path));
+			utils.log("=== The Url Below Hitted Block Rules: ===\n>>>", client_request.url);
+			// example: $url.path = '/view.php?id=123', $url.pathname = '/view.php';
+			var query = $url.path.replace($url.pathname, '');
+			var noQueryUrl = client_request.url.replace(query, '');
+			var contentType = 'text/plain';
+
+			if (path.extname(noQueryUrl) === '.js') { // path.extname(param), param must no query.
+				contentType = 'application/x-javascript';
 			}
-			else { // 即使用全文件匹配
-				client_response.end(utils.getfile(dest));
+			else if (path.extname(noQueryUrl) === '.css') {
+				contentType = 'text/css';
 			}
+			
+			client_response.writeHead(200, { 'Content-Type': contentType });
+			if (target.indexOf('{*}') !== -1) { // 使用目录匹配
+				var url_prefix = target.replace('{*}', ''),
+					req_path = noQueryUrl.replace(url_prefix, '');
+				utils.log("Directory Matched! Sent file: " + dest + req_path);
+				client_response.end(fs.readFileSync(dest + req_path));
+			}
+			else { // 即使用全文件匹配, 还缺一个根据文件类型来匹配
+				utils.log("Fully Matched! Sent file: " + dest);
+				//client_response.writeHead(200, { 'Content-Type': 'text/plain' });
+				client_response.end(fs.readFileSync(dest));
+			}
+			utils.log("========== Implanted done ==========\n");
 		}
 	}
 			

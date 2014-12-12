@@ -6,7 +6,7 @@
 
 module.exports = {
 	    skip_url : [ //不进入代理的url, 注: skip_url和pass_url互斥，两者都存在配置时，skip_url生效，即跳过skip_url的值，其它url都走代理
-	    	
+	    	/*
 			'http://*。weibo.com/*',
 			'http://weibo.com/*',
 	    	'http://*.weibo.cn/*',
@@ -15,12 +15,14 @@ module.exports = {
 			'http://sina.cn/*',
 			'http://*.sina.com.*',
 			'http://sina.com.*'
-			
+			*/
 		],
 		
 		track_url : [ //进入代理，并经过代理服务器请求外网返回数据
 	    	'http://*.weixin.qq.com/*',
-	    	'http://*.boc.cn/*'
+	    	'http://*.boc.cn/*',
+			'http://*.bdimg.com/*',
+			'http://m.baidu.com/static/*'
 		],
 		
 		block_url : [ //进入代理，并劫持返回本地模拟数据
@@ -29,12 +31,25 @@ module.exports = {
 				dest: '/home/bae/static/js/abc.js'
 			},
 			{ 
+				target: 'http://apps.bdimg.com/cloudaapi/lightapp.js',
+				dest: '/Users/luoqin/Downloads/test_lightapp.js'
+			},
+			{ 
+				target: 'http://m.baidu.com/static/search/siteapp/lego/smartBar.js',
+				dest: '/Users/luoqin/Downloads/test_smartbar.js'
+			},
+			{ 
+				target: 'http://apps.bdimg.com/libs/jquery/2.1.1/{*}',
+				dest: '/Users/luoqin/Downloads/'
+			},
+			{ 
 				target: 'http://play.baidu.com/static/{*}',
 				dest: '/home/bae/static/'
 			}
 		],
 		
-		filterLogType : 'png|jpg|jpeg|gif|woff|ttf',
+		skipLogType : 'png|jpg|jpeg|gif|woff|ttf',
+		//trackLogType : 'css|js',
 		pacUri : '/',
 		port : '9527',
 		
