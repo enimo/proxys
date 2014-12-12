@@ -28,23 +28,19 @@ module.exports = {
 		block_url : [ //进入代理，并劫持返回本地模拟数据
 			{ 
 				target: 'http://music.baidu.com/static/js/abc.js',
-				dest: '/home/bae/static/js/abc.js'
+				dest: '/home/enimo/static/js/abc.js'
 			},
 			{ 
 				target: 'http://apps.bdimg.com/cloudaapi/lightapp.js',
-				dest: '/Users/luoqin/Downloads/test_lightapp.js'
-			},
-			{ 
-				target: 'http://m.baidu.com/static/search/siteapp/lego/smartBar.js',
-				dest: '/Users/luoqin/Downloads/test_smartbar.js'
+				dest: '/Users/enimo/Downloads/test_lightapp.js'
 			},
 			{ 
 				target: 'http://apps.bdimg.com/libs/jquery/2.1.1/{*}',
-				dest: '/Users/luoqin/Downloads/'
+				dest: '/Users/enimo/Downloads/'
 			},
 			{ 
 				target: 'http://play.baidu.com/static/{*}',
-				dest: '/home/bae/static/'
+				dest: '/home/enimo/static/'
 			}
 		],
 		
