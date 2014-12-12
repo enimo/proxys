@@ -4,7 +4,7 @@
  * @version 0.0.2
  */
 
-var	cfg = require('./config'),
+var	cfg = require('../config'),
 	http = require('http'),
 	_ = module.exports;
 
@@ -14,16 +14,16 @@ var	cfg = require('./config'),
     	define(factory);
   	} else if (typeof module !== 'undefined' && module.exports) {
     	// Node.js Module
-    	_ = definition();
+    	_ = factory();
   	} else {
-    	this[name] = definition();
+    	this[name] = factory();
   	}
 })('proxys.utils', function () {
 
 	//get the proxy local ip
 	//fixed windows can't get local ip
 	//fixed virtual machine can't get real network ip address
-	function get_local_ip1() {	
+	function getPublicIP1() {	
 		var net = require('net'),		
 			socket = net.createConnection(80, 'www.baidu.com');	
 	  	socket.on('connect', function() {
@@ -39,7 +39,7 @@ var	cfg = require('./config'),
 	}
 	
 	//get local ip via os networkInterfaces()
-	function get_local_ip2() {
+	function getPublicIP2() {
 		try {
 	    	var i, j, interfaces = require('os').networkInterfaces();
 			//console.log(interfaces);
@@ -78,20 +78,24 @@ var	cfg = require('./config'),
     	}
     	str += '        return "DIRECT";\n'; //加入白名单的域名不进行代理，默认全部请求走代理
         str += '    }\n';
-
     	str += '    return "PROXY ' + proxy_addr + '";\n';//"DIRECT";
 					//此处也可用于cross wall，填入本机局域网ip以及本地的HTTP或者SOCKET用于cross的监听端口
 					//return "SOCKS 192.168.1.100:7070"; or "PROXY 192.168.1.100:7070"
         str += '}';
-
     	return str;
 	}
 	
+	function log() {
+	    var apc = Array.prototype.slice;
+	    window.console && window.console.log.apply(console, apc.call(arguments));
+	}
+	
 	return {
+		log 			: log,
 		firstWord 		: firstWord,
 		generatePac		: generatePac,
-		get_local_ip1 	: get_local_ip1,
-		get_local_ip2 	: get_local_ip2
+		getPublicIP1 	: getPublicIP1,
+		getPublicIP2 	: getPublicIP2
 	};
 	
 });

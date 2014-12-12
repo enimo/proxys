@@ -26,7 +26,7 @@ proxys
 and then follow the tips below:
 ```shell
 Please use this pac file: http://192.168.1.101:9527/p
-I'm listening on port: 9527
+I\'m listening on port: 9527
 ```
 Add the proxy pac file address on your mobile network panel, and once more, enjoy it.
 
@@ -40,7 +40,8 @@ Proxys' suggested partner HTTPScoop (http://www.tuffcode.com/download.html), It'
 
 I'll keep polishing this app and keep adding new features. If you have any problems when using this engine, please feel free to drop me an issue or contact me:
 
-* weibo: http://weibo.com/enimo
+* Twitter: https://twitter.com/enimo
+* Weibo: http://weibo.com/enimo
 
 
 
