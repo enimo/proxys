@@ -19,7 +19,8 @@ var cpus = require('os').cpus().length,
     proxy_addr =  public_ip + ':' + local_port,
     local_addr = '0.0.0.0';
 
-utils.log("Plant this pac URL in your proxy config: http://" + proxy_addr + pac_uri);
+utils.log("1. Plant this pac URL in your auto-proxy config: http://" + proxy_addr + pac_uri);
+utils.log("2. Edit the ROOT/config.js file to add some proxy rules if you want.");
 
 http.createServer(function(client_request, client_response) {
 	//broswer default icon request
@@ -166,7 +167,7 @@ http.createServer(function(client_request, client_response) {
 }).listen(local_port, local_addr);
 
 //utils.log('Proxys listening port: ' + local_port);
-utils.log("\nProxys Rules info: \n", utils.uriTrackInfo());
+utils.log("\nCurrent Proxys Rules info: \n", utils.uriTrackInfo());
 utils.log("\n===== Track Logging ... =====");
 
 process.on('uncaughtException', function(err) {
