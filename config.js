@@ -7,7 +7,7 @@
 module.exports = {
 	    skip_url : [ //不进入代理的url, 注: skip_url和pass_url互斥，两者都存在配置时，skip_url生效，即跳过skip_url的值，其它url都走代理
 	    	/*
-			'http://*。weibo.com/*',
+			'http://*.weibo.com/*',
 			'http://weibo.com/*',
 	    	'http://*.weibo.cn/*',
 			'http://weibo.cn/*',
