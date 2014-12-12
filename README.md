@@ -82,11 +82,11 @@ module.exports = {
 	block_url : [ 
 		{ 
 			target: 'http://music.baidu.com/static/js/abc.js',
-			dest: '/home/bae/static/js/abc.js'
+			dest: '/home/enimo/static/js/abc.js'
 		},
 		{ 
 			target: 'http://play.baidu.com/static/{*}',
-			dest: '/home/bae/static/'
+			dest: '/home/enimo/static/'
 		}
 	]
 }
