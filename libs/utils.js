@@ -102,7 +102,10 @@ var	cfg = require('../config'),
 	
 	function log() {
 	    var apc = Array.prototype.slice;
-	    console && console.log.apply(console, apc.call(arguments));
+	    var arr = apc.call(arguments);
+	    arr.unshift('[' + new Date() +']');
+	    
+	    console && console.log.apply(console, arr);
 	}
 	
 	//generate a pac contents

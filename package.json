@@ -1,10 +1,11 @@
 {
   "name": "proxys",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "A easy way to share your pc network to mobile device, and capture network traffic to debug mobile app.",
   "main": "./app.js",
   "scripts": {
-    "test": "node ./test/test.js"
+    "test": "node ./test/test.js",
+    "start": "node ./app.js"
   },
   "repository": {
     "type": "git",

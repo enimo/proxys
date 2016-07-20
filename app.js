@@ -19,8 +19,8 @@ var cpus = require('os').cpus().length,
     proxy_addr =  public_ip + ':' + local_port,
     local_addr = '0.0.0.0';
 
-utils.log("1. Plant this pac URL in your auto-proxy config: http://" + proxy_addr + pac_uri);
-utils.log("2. Edit the ROOT/config.js file to add some proxy rules if you want.");
+console.log("1. Plant this pac URL in your auto-proxy config: http://" + proxy_addr + pac_uri);
+console.log("2. Edit the Package-ROOT/config.js file to add some proxy rules if you want.");
 
 http.createServer(function(client_request, client_response) {
 	//broswer default icon request
@@ -44,6 +44,7 @@ http.createServer(function(client_request, client_response) {
             'Content-Type' : 'application/x-ns-proxy-autoconfig'
         });
         client_response.end(utils.generatePac(proxy_addr));
+        utils.log("New pac client connected: " + client_request.url + ', [UA: '+ client_request.headers['user-agent'] +']');
         return;
     }
 
@@ -55,7 +56,7 @@ http.createServer(function(client_request, client_response) {
         return;
 	}
     else if (utils.firstWord(client_request.url, 'http')) { // check是否是HTTP协议，可能是file://协议
-         $url = url.parse(client_request.url); 
+        $url = url.parse(client_request.url); 
     }
 	else {
 		utils.log('Unsupport protocol request(such as "file://" etc..): ', client_request.url);
@@ -64,40 +65,73 @@ http.createServer(function(client_request, client_response) {
         return;
     }
 
+    // 获取请求头
+   	client_request.headers.host = $url.host;
+	var request_options = {
+	        host: $url.host,
+	        hostname: $url.hostname,
+	        port: $url.port || 80,
+	        path: $url.path,
+	        method: client_request.method,
+	        headers: client_request.headers
+	};
+
+	// 域名过滤规则
+	var isTrackDomain = true;
+	if (cfg.skip_url.length) {
+		for (var i = cfg.skip_url.length - 1; i >= 0; i--) {
+			var reg = cfg.skip_url[i];
+			if (client_request.url.match(new RegExp(reg, 'g'))) {
+				isTrackDomain = false;
+				// utils.log('====skip_url now : ' + reg);
+				break;
+			}
+		}
+	}
+	else if (cfg.track_url.length) {
+		for (var i = cfg.track_url.length - 1; i >= 0; i--) {
+			var reg = cfg.track_url[i];
+			if (!client_request.url.match(new RegExp(reg, 'g'))) {
+				isTrackDomain = false;
+			}
+		}
+	}
+
+	
+	// 文件名后缀过滤规则
 	if (
-		(	cfg.skipLogType 
-			&& 
-			!client_request.url.match(new RegExp('\.('+ cfg.skipLogType +')', 'g'))
-		)
-		||
-		(	cfg.trackLogType 
-			&& 
-			client_request.url.match(new RegExp('\.('+ cfg.trackLogType +')', 'g'))
-		)
-		
+			isTrackDomain
+			&&
+			(
+				(	cfg.skipLogType 
+					&& 
+					!client_request.url.match(new RegExp('\.('+ cfg.skipLogType +')', 'g'))
+				)
+				||
+				(	!cfg.skipLogType  // skipLogType 和 trackLogType 互斥，两者都存在配置时, skipLogType生效
+					&&
+					cfg.trackLogType 
+					&& 
+					client_request.url.match(new RegExp('\.('+ cfg.trackLogType +')', 'g'))
+				)
+			)
 		) {
-    		utils.log(client_request.connection.remoteAddress + ': ' 
+			console.log("-------------");
+    		utils.log("" + client_request.connection.remoteAddress + ' ' 
 					+ client_request.method + ' ' 
 					+ client_request.url
 			);
+
+    		if (cfg.showReqHeader) {
+				console.log('==> Client request header:', request_options.headers);
+			}
+
+			if (cfg.showReqUA) {
+				console.log('==> Client UA:', request_options.headers['user-agent']);
+			}
 	}
 	
-   	client_request.headers.host = $url.host;
-	var request_options = {
-	           host: $url.host,
-	           hostname: $url.hostname,
-	           port: $url.port || 80,
-	           path: $url.path,
-	           method: client_request.method,
-	           headers: client_request.headers
-	};
-	
-	if (cfg.showReqHeader) {
-		utils.log('Client request header:', request_options.headers);
-	}
-	if (cfg.showReqUA) {
-		utils.log('Client request UserAgent:', request_options.headers['user-agent']);
-	}
+
 	
 	if (cfg.block_url.length !== 0) { // 需要劫持的url请求
 		for (var i = 0, len = cfg.block_url.length; i < len; i++) {
@@ -149,14 +183,19 @@ http.createServer(function(client_request, client_response) {
 	}
 			
    	var proxy_request = http.request(request_options, function(proxy_response) {
+        
+        setTimeout(function(){
+        	// utils.log('Server response body done');
         	proxy_response.pipe(client_response);
-        	proxy_response.on('error', function(err) {
-            	console.error('Target server error: ' + err.message);
-        	});
-			if (cfg.showResHeader) {
-            	utils.log('Server response header: ', proxy_response.headers);
-			}
-        	client_response.writeHead(proxy_response.statusCode, proxy_response.headers);
+        }, cfg.delayTime || 0);
+
+        proxy_response.on('error', function(err) {
+        	console.error('Target server error: ' + err.message);
+        });
+		if (cfg.showResHeader) {
+        	utils.log('Server response header: ', proxy_response.headers);
+		}
+        client_response.writeHead(proxy_response.statusCode, proxy_response.headers);
     });
 
     client_request.pipe(proxy_request);
@@ -167,8 +206,8 @@ http.createServer(function(client_request, client_response) {
 }).listen(local_port, local_addr);
 
 //utils.log('Proxys listening port: ' + local_port);
-utils.log("\nCurrent Proxys Rules info: \n", utils.uriTrackInfo());
-utils.log("\n===== Track Logging ... =====");
+console.log("\nCurrent Proxys Rules info: \n", utils.uriTrackInfo());
+console.log("\n===== Track Logging ... =====");
 
 process.on('uncaughtException', function(err) {
     console.error('Caught exception: ' + err);
