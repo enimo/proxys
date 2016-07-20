@@ -44,14 +44,8 @@ Edit ROOT/config.js file, add uri to skip_url array:
 module.exports = {
  skip_url : [ 
     	
-		'http://*.weibo.com/*',
-		'http://weibo.com/*',
-    	'http://*.weibo.cn/*',
-		'http://weibo.cn/*',
-		'http://*.sina.cn/*',
-		'http://sina.cn/*',
-		'http://*.sina.com.*',
-		'http://sina.com.*'
+		'http:\/\/[a-z0-9-]+\.bdimg\.com\/(.*)+',
+		'http:\/\/m\.baidu\.com\/(.*)+',
 		
 	]
 }
@@ -68,8 +62,7 @@ Edit ROOT/config.js file, add uri to track_url array:
 ```javascript
 module.exports = {
 	track_url : [ 
-    	'http://*.weixin.qq.com/*',
-    	'http://*.boc.cn/*'
+    	'http:\/\/m\.baidu\.com\/(.*)+',
 	],
 }
 ```
