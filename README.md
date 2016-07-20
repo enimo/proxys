@@ -30,8 +30,8 @@ and then follow the tips below:
 
 Current Proxys Rules info:
  ==== Skipped Uri below ====
-http://*.weibo.com/* 
-http://weibo.com/* 
+'http:\/\/[a-z0-9-]+\.weibo\.com/(.*)+',
+'http:\/\/weibo\.com/(.*)+',
 
 ===== Track Logging ... =====
 ```
