@@ -118,12 +118,30 @@ var	cfg = require('../config'),
 		}
 		return 'Nothing :(';
 	}
+
+
+	function getHostPortFromString (hostString, defaultPort) {
+	  var host = hostString;
+	  var port = defaultPort;
+	  var regex_hostport = /^([^:]+)(:([0-9]+))?$/;
+
+	  var result = regex_hostport.exec(hostString);
+	  if (result != null) {
+	    host = result[1];
+	    if (result[2] != null) {
+	      port = result[3];
+	    }
+	  }
+
+	  return ( [host, port] );
+	}
 	
 	return {
 		log 		 : log,
 		firstWord 	 : firstWord,
 		generatePac	 : generatePac,
 		uriTrackInfo : uriTrackInfo,
+		getHostPortFromString : getHostPortFromString,
 		getPublicIP1 : getPublicIP1,
 		getPublicIP2 : getPublicIP2
 	};

@@ -10,9 +10,13 @@ module.exports = {
 			// 'http:\/\/[a-z0-9-]+\.weibo\.com/(.*)+',
 			// 'http:\/\/weibo\.com/(.*)+',
 			'http:\/\/[a-z0-9-]+\.bdimg\.com\/(.*)+',
+			// 'https:\/\/[a-z0-9-]+\.bdimg\.com',
+			'http:\/\/[a-z0-9-]+\.bdstatic\.com\/(.*)+',
+			'https:\/\/[a-z0-9-]+\.bdstatic\.com',
+			'https:\/\/s[a-z][0-9]\.baidu\.com', // wise静态资源
 			// 'http:\/\/timg01\.bdimg\.com\/(.*)+',
 			// "http:\/\/(\w|\-)+\.baidu\.com\/(.*)+",
-			'http:\/\/m\.baidu\.com\/(.*)+',
+			// 'http:\/\/m\.baidu\.com\/(.*)+',
 			
 		],
 		
@@ -20,7 +24,9 @@ module.exports = {
 	  		// 'http://*.weixin.qq.com/*',
 	  		// 'http://*.boc.cn/*',
 			// 'http:\/\/[a-z0-9-]+\.bdimg\.com\/(.*)+',
-			'http:\/\/m\.baidu\.com\/(.*)+',
+			// 'https:\/\/m\.baidu\.com\/(.*)+',
+			// 'http:\/\/m\.baidu\.com\/(.*)+',
+			// 'http:\/\/baijiahao\.baidu\.com\/(.*)+',
 		],
 		
 		block_url : [ //进入代理，并劫持返回本地模拟数据

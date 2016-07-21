@@ -10,6 +10,7 @@ var http = require('http'),
 	fs = require('fs'),
 	path = require('path'),
 	utils = require('./libs/utils'),
+	net = require('net'),
 	cfg = require('./config');
 
 var cpus = require('os').cpus().length,
@@ -22,12 +23,12 @@ var cpus = require('os').cpus().length,
 console.log("1. Plant this pac URL in your auto-proxy config: http://" + proxy_addr + pac_uri);
 console.log("2. Edit the Package-ROOT/config.js file to add some proxy rules if you want.");
 
-http.createServer(function(client_request, client_response) {
+var server = http.createServer(function(client_request, client_response) {
 	//broswer default icon request
 	if (client_request.url === '/favicon.ico') {
-	            client_response.writeHead(404);
-	            client_response.end();
-	            return;
+		client_response.writeHead(404);
+		client_response.end();
+		return;
 	 }	
     if (client_request.url === '/crossdomain.xml') {
         client_response.writeHead(200, {
@@ -68,21 +69,21 @@ http.createServer(function(client_request, client_response) {
     // 获取请求头
    	client_request.headers.host = $url.host;
 	var request_options = {
-	        host: $url.host,
-	        hostname: $url.hostname,
-	        port: $url.port || 80,
-	        path: $url.path,
-	        method: client_request.method,
-	        headers: client_request.headers
+	    host: $url.host,
+	    hostname: $url.hostname,
+	    port: $url.port || 80,
+	    path: $url.path,
+	    method: client_request.method,
+	    headers: client_request.headers
 	};
 
 	// 域名过滤规则
-	var isTrackDomain = true;
+	var isTrackHTTP = true;
 	if (cfg.skip_url.length) {
 		for (var i = cfg.skip_url.length - 1; i >= 0; i--) {
 			var reg = cfg.skip_url[i];
 			if (client_request.url.match(new RegExp(reg, 'g'))) {
-				isTrackDomain = false;
+				isTrackHTTP = false;
 				// utils.log('====skip_url now : ' + reg);
 				break;
 			}
@@ -92,7 +93,7 @@ http.createServer(function(client_request, client_response) {
 		for (var i = cfg.track_url.length - 1; i >= 0; i--) {
 			var reg = cfg.track_url[i];
 			if (!client_request.url.match(new RegExp(reg, 'g'))) {
-				isTrackDomain = false;
+				isTrackHTTP = false;
 			}
 		}
 	}
@@ -100,7 +101,7 @@ http.createServer(function(client_request, client_response) {
 	
 	// 文件名后缀过滤规则
 	if (
-			isTrackDomain
+			isTrackHTTP
 			&&
 			(
 				(	cfg.skipLogType 
@@ -204,6 +205,81 @@ http.createServer(function(client_request, client_response) {
     });
 
 }).listen(local_port, local_addr);
+
+
+
+// 针对HTTPS的代理支持, 但无法做替换和内容区域的解密 
+server.addListener('connect', function (req, socket, bodyhead) {
+	var hostPort = utils.getHostPortFromString(req.url, 443);
+	var hostDomain = hostPort[0];
+	var port = parseInt(hostPort[1]);
+
+	
+	var isTrackHTTPS = true;
+	if (cfg.skip_url.length) {
+		for (var i = cfg.skip_url.length - 1; i >= 0; i--) {
+			var reg = cfg.skip_url[i].replace('https:\/\/', '');
+			// console.log("====" + hostDomain + "==" + reg);
+			if (hostDomain.match(new RegExp(reg, 'g'))) {
+				isTrackHTTPS = false;
+				break;
+			}
+		}
+	}
+	else if (cfg.track_url.length) {
+		for (var i = cfg.track_url.length - 1; i >= 0; i--) {
+			var reg = cfg.track_url[i].replace('https:\/\/', '');
+			if (!hostDomain.match(new RegExp(reg, 'g'))) {
+				isTrackHTTPS = false;
+			}
+		}
+	}
+
+	if (isTrackHTTPS) {
+		console.log("-------------HTTPS");
+		// console.log("Proxying HTTPS request for:", hostDomain, port);
+	    utils.log("" + req.connection.remoteAddress + ' ' 
+				+ req.method + ' ' 
+				+ req.url
+		);
+		if (cfg.showReqUA) {
+			console.log('==> Client UA:', req.headers['user-agent']);
+		}
+	}
+
+	var proxySocket = new net.Socket();
+	proxySocket.connect(port, hostDomain, function () {
+	    proxySocket.write(bodyhead);
+	    socket.write("HTTP/" + req.httpVersion + " 200 Connection established\r\n\r\n");
+	  }
+	);
+
+	proxySocket.on('data', function (chunk) {
+	  socket.write(chunk);
+	});
+
+	proxySocket.on('end', function () {
+	  socket.end();
+	});
+
+	proxySocket.on('error', function () {
+	  socket.write("HTTP/" + req.httpVersion + " 500 Connection error\r\n\r\n");
+	  socket.end();
+	});
+
+	socket.on('data', function (chunk) {
+	  proxySocket.write(chunk);
+	});
+
+	socket.on('end', function () {
+	  proxySocket.end();
+	});
+
+	socket.on('error', function () {
+	  proxySocket.end();
+	});
+
+});
 
 //utils.log('Proxys listening port: ' + local_port);
 console.log("\nCurrent Proxys Rules info: \n", utils.uriTrackInfo());
