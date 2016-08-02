@@ -117,9 +117,10 @@ var server = http.createServer(function(client_request, client_response) {
 				)
 			)
 		) {
-			console.log("-------------");
+			console.log("------------==-");
+			// console.log(client_request);
     		utils.log("" + client_request.connection.remoteAddress + ' ' 
-					+ client_request.method + ' ' 
+					+ client_request.method + ' '  + client_request.statusCode + ' '
 					+ client_request.url
 			);
 
