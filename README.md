@@ -2,7 +2,7 @@
 
 A easy way to share your PC network to mobile device, and capture network traffic to debug mobile app.
 
-Proxys help developer easy to share their local pc network to mobile device, and supply with a convenient method to debug and capture the http request header information  from you mobile.
+Proxys help developer easy to share their local pc network to mobile device, and supply with a convenient method to debug and capture the http request header information from you mobile.
 
 ## Usage
 
@@ -23,6 +23,12 @@ npm install -g proxys
 ```
 proxys
 ```
+Or
+```
+cd ROOT_DIR
+npm start
+```
+
 and then follow the tips below:
 ```shell
 1. Plant this pac URL in your auto-proxy config: http://192.168.1.111:9527/

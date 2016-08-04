@@ -1,27 +1,26 @@
 /*!
- * This file is used to defined common functions.
- * @author enimo
+ * This file is used to defined test functions.
  * @version 0.0.2
  */
 
-//dns
+// dns
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-  console.log('virtual addr: '+add);
-})
+    console.log('virtual addr: ' + add);
+});
 
-//socket
+// socket
 function getNetworkIP(callback) {
-  var net = require('net');
-  var socket = net.createConnection(80, 'www.baidu.com');
+    var net = require('net');
+    var socket = net.createConnection(80, 'www.baidu.com');
 
-  socket.on('connect', function() {
-    callback(undefined, socket.address().address);
-    socket.end();
-  });
+    socket.on('connect', function() {
+        callback(undefined, socket.address().address);
+        socket.end();
+    });
 
-  socket.on('error', function(e) {
-    callback(e, 'error');
-  });
+    socket.on('error', function(e) {
+        callback(e, 'error');
+    });
 }
 
 getNetworkIP(function (error, ip) {
@@ -31,34 +30,30 @@ getNetworkIP(function (error, ip) {
     }
 });
 
+// os networkInterfaces()
+function getLocalIP() {
+    try {
+        var i;
+        var j;
+        var interfaces = require('os').networkInterfaces();
+        for (i in interfaces) {
+            if (interfaces.hasOwnProperty(i)) {
+                for (j = 0; j < interfaces[i].length; j++) {
+                    var addr = interfaces[i][j];
+                    if (addr.family === 'IPv4' && !addr.internal) {
+                        return addr.address;
+                    }
+                }
+            }
+        }
+    }
+    catch (err) {
+        console.log('get local ip err: ', err);
+        return '127.0.0.1';
+    }
+    return '127.0.0.1';
 
-//os networkInterfaces()
-function get_local_ip() {
-	
-	try {
+}
 
-    var i, j, interfaces = require('os').networkInterfaces();
-		
-		//console.log(interfaces);
-    	for (i in interfaces) {
-        	if (interfaces.hasOwnProperty(i)) {
-            	for (j = 0; j < interfaces[i].length; j++) {
-                	var addr = interfaces[i][j];
-                	if (addr.family === 'IPv4' && !addr.internal) {
-                    	return addr.address;
-                	}
-            	}
-        	}
-    	}
-	} catch (err) {
-		console.log("get local ip err: ", err);
-    	return '127.0.0.1';
-	}
-
-	return '127.0.0.1';
-
-};
-
-console.log('interface ip: ',get_local_ip());
-
-;(function($_$){})(undefined);
+console.log('interface ip: ',getLocalIP());
+// (function($_$){})(undefined);
