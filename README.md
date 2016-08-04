@@ -45,10 +45,10 @@ Add the proxy pac file address on your mobile network panel, and once more, enjo
 
 ### Add skip URI
 
-Edit ROOT/config.js file, add uri to skip_url array:
+Edit ROOT/config.js file, add uri to skipUrl array:
 ```javascript
 module.exports = {
- skip_url : [ 
+ skipUrl : [ 
     	
 		'http:\/\/[a-z0-9-]+\.bdimg\.com\/(.*)+',
 		'http:\/\/m\.baidu\.com\/(.*)+',
@@ -58,28 +58,28 @@ module.exports = {
 ```
 Notice:
 
-1. skip_url为不进入代理的url列表;
+1. skipUrl为不进入代理的url列表;
 
-2. skip_url和pass_url互斥，两者都存在配置时，skip_url生效，即跳过skip_url的值，其它url都走代理.
+2. skipUrl和pass_url互斥，两者都存在配置时，skipUrl生效，即跳过skipUrl的值，其它url都走代理.
 
 ### Add track URI
 
-Edit ROOT/config.js file, add uri to track_url array:
+Edit ROOT/config.js file, add uri to trackUrl array:
 ```javascript
 module.exports = {
-	track_url : [ 
+	trackUrl : [ 
     	'http:\/\/m\.baidu\.com\/(.*)+',
 	],
 }
 ```
-Notice: track_url中的uri列表会进入代理，并经过代理服务器请求外网返回数据.
+Notice: trackUrl中的uri列表会进入代理，并经过代理服务器请求外网返回数据.
 
 ### Add block URL
 
-Edit ROOT/config.js file, add url to block_url array:
+Edit ROOT/config.js file, add url to blockUrl array:
 ```javascript
 module.exports = {
-	block_url : [ 
+	blockUrl : [ 
 		{ 
 			target: 'http://music.baidu.com/static/js/abc.js',
 			dest: '/home/enimo/static/js/abc.js'
@@ -114,8 +114,3 @@ I'll keep polishing this app and keep adding new features. If you have any probl
 
 * Twitter: https://twitter.com/enimo
 * Weibo: http://weibo.com/enimo
-
-
-
-
-
