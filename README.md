@@ -43,7 +43,7 @@ Current Proxys Rules info:
 ```
 Add the proxy pac file address on your mobile network panel, and once more, enjoy it.
 
-### Add skip URI
+### Add skip URL
 
 Edit ROOT/config.js file, add uri to skipUrl array:
 ```javascript
@@ -62,7 +62,7 @@ Notice:
 
 2. skipUrl和pass_url互斥，两者都存在配置时，skipUrl生效，即跳过skipUrl的值，其它url都走代理.
 
-### Add track URI
+### Add track URL
 
 Edit ROOT/config.js file, add uri to trackUrl array:
 ```javascript
