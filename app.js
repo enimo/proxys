@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
  * Main app entrence of Simple Mobile Proxys
- * Baijiahao Proxy Provider
+ * Mobile Baidu Proxy Provider
  *
  * @update: 2016.5.8
- * @author: luoqin <enimong@gmail.com>
- * @version 2.1.2
+ * @author: enimo <enimong@gmail.com>
+ * @version 2.2.0
  * @see: README.md
  * @formatter & jslint: fecs xx.js --check
  */
@@ -24,7 +24,14 @@ var proxyAddr =  (utils.getPublicIP() || cfg.defaultPublicIP) + ':' + cfg.port;
 console.log('1. Plant this pac URL in your auto-proxy config: http://' + proxyAddr + cfg.pacUri);
 console.log('2. Edit the Package-ROOT/config.js file to add some proxy rules if you want.');
 
-var server = http.createServer(function(req, res) {
+
+http.createServer()
+    .on('connect', ssl.connectTrans) // 透传HTTPS资源
+    .on('request', requestCallback) // 抓包处理HTTP资源
+    .listen(localPort, localAddr);
+
+
+function requestCallback(req, res) {
 
     // Purge disturb resource and check is supported protocol (http/https)
     if (utils.isPurgeResource(req, res, proxyAddr) || !utils.checkURI(req, res)) {
@@ -89,10 +96,7 @@ var server = http.createServer(function(req, res) {
         console.error('Proxy server error: ' + err.message);
     });
 
-}).listen(localPort, localAddr);
-
-// 透传HTTPS资源
-ssl.httpsTransmission(server);
+}
 
 console.log('\nCurrent Proxys Rules info: \n', utils.uriTrackInfo());
 console.log('\n===== Track Logging ... =====');
