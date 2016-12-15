@@ -58,9 +58,9 @@ module.exports = {
 ```
 Notice:
 
-1. skipUrl为不进入代理的url列表;
+1. "skipUrl" means untrack url list;
 
-2. skipUrl和pass_url互斥，两者都存在配置时，skipUrl生效，即跳过skipUrl的值，其它url都走代理.
+2. The "skipUrl" and "trackUrl" mutexes, if u config both of them, only skipUrl will effect.
 
 ### Add track URL
 
@@ -72,7 +72,7 @@ module.exports = {
 	],
 }
 ```
-Notice: trackUrl中的uri列表会进入代理，并经过代理服务器请求外网返回数据.
+Notice: The uri in trackUrl list will be tracked and print log info.
 
 ### Add block URL
 
@@ -93,9 +93,9 @@ module.exports = {
 ```
 Notice:
 
-1. block url列表将进入代理，并劫持后返回本地模拟数据;
+1. The blockUrl.target url will be injected，and return the replaced resource which defined in blockUrl.dest;
 
-2. 支权目录匹配和单文件匹配.
+2. Both directory and single file are supported.
 
 ### Additional info
 
